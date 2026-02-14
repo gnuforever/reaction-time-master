@@ -1,26 +1,40 @@
-.game-container {
+/** Responsive Player Panel */
+.player-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Game Area Styling */
+.game-area {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    width: 100%;
+    height: 400px;
     background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
 }
 
-.start-button {
-    padding: 20px 40px;
-    font-size: 2em;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+/* Stats Panel */
+.stats-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+    padding: 10px;
 }
 
-.start-button:hover {
-    background-color: #45a049;
-}
-
-.timer {
-    font-size: 3em;
-    color: #333;
+/* Chart Section */
+.chart-section {
+    width: 100%;
+    height: 300px;
+    margin-top: 20px;
 }
