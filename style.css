@@ -1,0 +1,26 @@
+.game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.start-button {
+    padding: 20px 40px;
+    font-size: 2em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.start-button:hover {
+    background-color: #45a049;
+}
+
+.timer {
+    font-size: 3em;
+    color: #333;
+}
