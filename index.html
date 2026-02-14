@@ -3,26 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reaction Time Master</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Reaction Time Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #waitingBox { width: 300px; height: 100px; background-color: red; margin: 50px auto; display: flex; align-items: center; justify-content: center; }
+        #reactionBox { width: 300px; height: 100px; background-color: green; margin: 50px auto; display: none; }
+        #results { text-align: center; }
+        #startButton { display: block; margin: 20px auto; }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Reaction Time Master!</h1>
-    </header>
-    <main>
-        <section id="game">
-            <h2>Test Your Reaction Time</h2>
-            <button id="start-btn">Start Game</button>
-        </section>
-        <section id="results">
-            <h2>Results</h2>
-            <p id="reaction-time">Your reaction time will be displayed here.</p>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 Reaction Time Master</p>
-    </footer>
-    <script src="script.js"></script>
+    <div id="waitingBox">Waiting for you to react...</div>
+    <div id="reactionBox">Click here!</div>
+    <button id="startButton">Start Game</button>
+    <div id="results">
+        <p>Individual Reaction Times: <span id="individualTimes"></span></p>
+        <p>Average Time: <span id="averageTime"></span></p>
+        <p>Best Time: <span id="bestTime"></span></p>
+        <p>Worst Time: <span id="worstTime"></span></p>
+    </div>
+    <script>
+        let individualTimes = [];
+        let startTime;
+        const waitingBox = document.getElementById('waitingBox');
+        const reactionBox = document.getElementById('reactionBox');
+        const startButton = document.getElementById('startButton');
+        const individualTimesDisplay = document.getElementById('individualTimes');
+        const averageTimeDisplay = document.getElementById('averageTime');
+        const bestTimeDisplay = document.getElementById('bestTime');
+        const worstTimeDisplay = document.getElementById('worstTime');
+
+        function resetGame() {
+            waitingBox.style.display = 'flex';
+            reactionBox.style.display = 'none';
+        }
+
+        function startGame() {
+            resetGame();
+            startButton.disabled = true;
+            setTimeout(() => {
+                waitingBox.style.display = 'none';
+                reactionBox.style.display = 'flex';
+                startTime = new Date();
+            }, Math.random() * 3000 + 2000);
+        }
+
+        reactionBox.addEventListener('click', () => {
+            const reactionTime = new Date() - startTime;
+            individualTimes.push(reactionTime);
+            individualTimesDisplay.innerText = individualTimes.join(', ') + ' ms';
+            updateStats();
+            resetGame();
+            startButton.disabled = false;
+        });
+
+        function updateStats() {
+            const averageTime = individualTimes.reduce((a, b) => a + b, 0) / individualTimes.length;
+            const bestTime = Math.min(...individualTimes);
+            const worstTime = Math.max(...individualTimes);
+            averageTimeDisplay.innerText = averageTime ? averageTime.toFixed(2) + ' ms' : 'N/A';
+            bestTimeDisplay.innerText = bestTime ? bestTime + ' ms' : 'N/A';
+            worstTimeDisplay.innerText = worstTime ? worstTime + ' ms' : 'N/A';
+        }
+
+        startButton.addEventListener('click', startGame);
+        resetGame();
+    </script>
 </body>
 </html>
