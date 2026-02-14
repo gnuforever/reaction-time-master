@@ -4,30 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reaction Time Game</title>
-    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/confetti-js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; }
+        #player-panel { width: 20%; padding: 20px; }
+        #game-area { width: 60%; padding: 20px; text-align: center; }
+        #stats-panel { width: 20%; padding: 20px; }
+        #chartCanvas { height: 200px; }
+    </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>Reaction Time Game</h1>
-        <div class="player-management">
-            <input type="text" id="playerName" placeholder="Enter Player Name" />
-            <button id="addPlayerBtn">Add Player</button>
-            <div id="playerList"></div>
-        </div>
-        <div class="game-area">
-            <button id="startGameBtn">Start Game</button>
-            <div id="gameDisplay" style="display:none;">
-                <p id="prompt">Wait for it!</p>
-                <button id="reactionButton" style="display:none;">Click Me!</button>
-            </div>
-        </div>
-        <div class="statistics-display">
-            <h2>Statistics</h2>
-            <div id="statsArea"></div>
-            <canvas id="myChart" width="400" height="200"></canvas>
-        </div>
+    <div id="player-panel">
+        <h2>Player Management</h2>
+        <input type="text" id="playerInput" placeholder="Enter player name" />
+        <button id="addPlayerBtn">Add Player</button>
+        <select id="playerSelector">
+            <option>Select Player</option>
+        </select>
     </div>
-    <script src="script.js"></script>
+    <div id="game-area">
+        <h2>Reaction Time Game</h2>
+        <div id="waitingBox">Waiting for the click...</div>
+        <button id="clickBtn" disabled>Click Me!</button>
+    </div>
+    <div id="stats-panel">
+        <h2>Statistics</h2>
+        <p>Best Score: <span id="bestScore">0</span></p>
+        <p>Average Score: <span id="avgScore">0</span></p>
+        <p>Total Attempts: <span id="totalAttempts">0</span></p>
+        <div>
+            <button id="dailyBtn">Daily</button>
+            <button id="weeklyBtn">Weekly</button>
+            <button id="monthlyBtn">Monthly</button>
+        </div>
+        <canvas id="chartCanvas"></canvas>
+    </div>
+    <script>
+        // JavaScript to handle game logic and statistics
+        const players = [];
+        document.getElementById('addPlayerBtn').addEventListener('click', function() {
+            const playerName = document.getElementById('playerInput').value;
+            if (playerName) {
+                players.push(playerName);
+                const option = document.createElement('option');
+                option.text = playerName;
+                document.getElementById('playerSelector').add(option);
+                document.getElementById('playerInput').value = '';
+            }
+        });
+
+        let bestScore = 0;
+        let totalAttempts = 0;
+        const scores = [];
+
+        document.getElementById('clickBtn').addEventListener('click', function() {
+            const reactionTime = Math.floor(Math.random() * 2000) + 100;
+            setTimeout(() => {
+                alert('Click!');
+                const now = new Date();
+                scores.push(reactionTime);
+                totalAttempts++;
+                if (reactionTime < bestScore || bestScore === 0) {
+                    bestScore = reactionTime;
+                }
+                updateStats();
+                const confetti = new ConfettiGenerator({ target: 'my-canvas' });
+                confetti.render();
+            }, reactionTime);
+        });
+
+        function updateStats() {
+            document.getElementById('bestScore').textContent = bestScore;
+            document.getElementById('avgScore').textContent = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2);
+            document.getElementById('totalAttempts').textContent = totalAttempts;
+            updateChart();
+        }
+
+        const ctx = document.getElementById('chartCanvas').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: scores.map((_, index) => index + 1),
+                datasets: [{
+                    label: 'Reaction Times',
+                    data: scores,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        function updateChart() {
+            chart.update();
+        }
+    </script>
 </body>
 </html>
