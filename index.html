@@ -1,108 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reaction Time Game</title>
+    <title>反应速度大师 - Reaction Time Master</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/confetti-js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; display: flex; }
-        #player-panel { width: 20%; padding: 20px; }
-        #game-area { width: 60%; padding: 20px; text-align: center; }
-        #stats-panel { width: 20%; padding: 20px; }
-        #chartCanvas { height: 200px; }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
-    <div id="player-panel">
-        <h2>Player Management</h2>
-        <input type="text" id="playerInput" placeholder="Enter player name" />
-        <button id="addPlayerBtn">Add Player</button>
-        <select id="playerSelector">
-            <option>Select Player</option>
-        </select>
-    </div>
-    <div id="game-area">
-        <h2>Reaction Time Game</h2>
-        <div id="waitingBox">Waiting for the click...</div>
-        <button id="clickBtn" disabled>Click Me!</button>
-    </div>
-    <div id="stats-panel">
-        <h2>Statistics</h2>
-        <p>Best Score: <span id="bestScore">0</span></p>
-        <p>Average Score: <span id="avgScore">0</span></p>
-        <p>Total Attempts: <span id="totalAttempts">0</span></p>
-        <div>
-            <button id="dailyBtn">Daily</button>
-            <button id="weeklyBtn">Weekly</button>
-            <button id="monthlyBtn">Monthly</button>
+    <div class="container">
+        <header class="header">
+            <h1>⚡ 反应速度大师 Reaction Time Master</h1>
+            <p>测试你的反应速度，挑战个人纪录！</p>
+        </header>
+
+        <div class="main-content">
+            <!-- 左侧：玩家管理和历史成绩 -->
+            <aside class="left-panel">
+                <div class="player-section">
+                    <h2>👥 玩家管理</h2>
+                    <div class="player-input-group">
+                        <input type="text" id="playerNameInput" placeholder="输入玩家名字" maxlength="20" />
+                        <button id="addPlayerBtn" class="btn btn-primary">+ 新增玩家</button>
+                    </div>
+                    <select id="playerSelector" class="player-dropdown">
+                        <option value="">选择玩家...</option>
+                    </select>
+                </div>
+
+                <div class="history-section">
+                    <h2>📋 历史成绩</h2>
+                    <div id="historyList" class="history-list">
+                        <p class="empty-message">请先选择或创建玩家</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 中间：游戏区域 -->
+            <section class="game-section">
+                <div class="game-box" id="gameBox">
+                    <p id="gameStatus">点击下方按钮开始游戏</p>
+                </div>
+                <button id="startGameBtn" class="btn btn-large">🎮 开始游戏</button>
+                <p id="currentBest" class="current-best">个人最好成绩: -- ms</p>
+            </section>
+
+            <!-- 右侧：统计信息和图表 -->
+            <aside class="right-panel">
+                <div class="stats-section">
+                    <h2>📊 统计信息</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">最好成绩</span>
+                            <span class="stat-value" id="bestScore">--</span>
+                            <span class="stat-unit">ms</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">平均成绩</span>
+                            <span class="stat-value" id="avgScore">--</span>
+                            <span class="stat-unit">ms</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">总尝试次数</span>
+                            <span class="stat-value" id="totalAttempts">--</span>
+                            <span class="stat-unit">次</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-section">
+                    <h2>📈 成绩曲线</h2>
+                    <div class="chart-controls">
+                        <button class="chart-btn active" data-range="day">📅 按天</button>
+                        <button class="chart-btn" data-range="week">📆 按周</button>
+                        <button class="chart-btn" data-range="month">📋 按月</button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="scoresChart"></canvas>
+                    </div>
+                </div>
+            </aside>
         </div>
-        <canvas id="chartCanvas"></canvas>
     </div>
-    <script>
-        // JavaScript to handle game logic and statistics
-        const players = [];
-        document.getElementById('addPlayerBtn').addEventListener('click', function() {
-            const playerName = document.getElementById('playerInput').value;
-            if (playerName) {
-                players.push(playerName);
-                const option = document.createElement('option');
-                option.text = playerName;
-                document.getElementById('playerSelector').add(option);
-                document.getElementById('playerInput').value = '';
-            }
-        });
 
-        let bestScore = 0;
-        let totalAttempts = 0;
-        const scores = [];
-
-        document.getElementById('clickBtn').addEventListener('click', function() {
-            const reactionTime = Math.floor(Math.random() * 2000) + 100;
-            setTimeout(() => {
-                alert('Click!');
-                const now = new Date();
-                scores.push(reactionTime);
-                totalAttempts++;
-                if (reactionTime < bestScore || bestScore === 0) {
-                    bestScore = reactionTime;
-                }
-                updateStats();
-                const confetti = new ConfettiGenerator({ target: 'my-canvas' });
-                confetti.render();
-            }, reactionTime);
-        });
-
-        function updateStats() {
-            document.getElementById('bestScore').textContent = bestScore;
-            document.getElementById('avgScore').textContent = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2);
-            document.getElementById('totalAttempts').textContent = totalAttempts;
-            updateChart();
-        }
-
-        const ctx = document.getElementById('chartCanvas').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: scores.map((_, index) => index + 1),
-                datasets: [{
-                    label: 'Reaction Times',
-                    data: scores,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    fill: false
-                }]
-            },
-            options: {
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
-
-        function updateChart() {
-            chart.update();
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
