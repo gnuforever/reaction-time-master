@@ -1,40 +1,49 @@
-/** Responsive Player Panel */
-.player-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-/* Game Area Styling */
-.game-area {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 400px;
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-}
-
-/* Stats Panel */
-.stats-panel {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    width: 100%;
-    padding: 10px;
-}
-
-/* Chart Section */
-.chart-section {
-    width: 100%;
-    height: 300px;
-    margin-top: 20px;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1600px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); overflow: hidden; }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; }
+.header h1 { font-size: 2.5em; margin-bottom: 10px; }
+.header p { font-size: 1.1em; opacity: 0.9; }
+.main-content { display: grid; grid-template-columns: 300px 1fr 350px; gap: 30px; padding: 30px; min-height: 600px; }
+.left-panel { display: flex; flex-direction: column; gap: 30px; }
+.player-section, .history-section, .stats-section, .chart-section { background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px solid #e9ecef; }
+.player-section h2, .history-section h2, .stats-section h2, .chart-section h2 { font-size: 1.3em; margin-bottom: 15px; color: #333; }
+.player-input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+.player-input-group input { flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 0.95em; transition: border-color 0.3s; }
+.player-input-group input:focus { outline: none; border-color: #667eea; }
+.player-dropdown { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 0.95em; background: white; cursor: pointer; transition: border-color 0.3s; }
+.player-dropdown:focus { outline: none; border-color: #667eea; }
+.btn { padding: 10px 20px; border: none; border-radius: 5px; font-size: 0.95em; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.btn-primary { background: #667eea; color: white; }
+.btn-primary:hover { background: #5568d3; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+.btn-large { width: 100%; padding: 15px; font-size: 1.1em; background: #667eea; color: white; margin-top: 20px; }
+.btn-large:hover { background: #5568d3; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+.btn-large:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+.history-list { max-height: 400px; overflow-y: auto; }
+.history-item { background: white; padding: 12px; margin-bottom: 10px; border-radius: 5px; border-left: 4px solid #667eea; font-size: 0.9em; }
+.history-date { font-weight: 600; color: #333; margin-bottom: 5px; }
+.history-score { color: #666; margin: 3px 0; padding-left: 10px; }
+.score-best { color: #28a745; font-weight: 600; }
+.empty-message { color: #999; text-align: center; padding: 20px; font-style: italic; }
+.game-section { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.game-box { width: 100%; height: 300px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5em; color: white; font-weight: 600; margin-bottom: 20px; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+.game-box.ready { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); animation: pulse 1s infinite; }
+.game-box.clickable { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); cursor: pointer; }
+.game-box.clickable:hover { transform: scale(1.02); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); }
+@keyframes pulse { 0%, 100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); } 50% { box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4); } }
+#gameStatus { font-size: 1.2em; }
+.current-best { font-size: 1.1em; color: #667eea; font-weight: 600; text-align: center; }
+.right-panel { display: flex; flex-direction: column; gap: 30px; }
+.stats-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+.stat-item { background: white; padding: 15px; border-radius: 5px; text-align: center; border: 2px solid #667eea; }
+.stat-label { display: block; color: #666; font-size: 0.9em; margin-bottom: 5px; }
+.stat-value { display: block; font-size: 1.8em; font-weight: 700; color: #667eea; }
+.stat-unit { display: block; color: #999; font-size: 0.8em; margin-top: 3px; }
+.chart-controls { display: flex; gap: 10px; margin-bottom: 15px; justify-content: center; }
+.chart-btn { padding: 8px 15px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+.chart-btn:hover { border-color: #667eea; color: #667eea; }
+.chart-btn.active { background: #667eea; color: white; border-color: #667eea; }
+.chart-container { position: relative; height: 250px; background: white; padding: 15px; border-radius: 5px; }
+@media (max-width: 1200px) { .main-content { grid-template-columns: 250px 1fr 300px; gap: 20px; padding: 20px; } }
+@media (max-width: 768px) { .main-content { grid-template-columns: 1fr; gap: 20px; } .header h1 { font-size: 1.8em; } .game-box { height: 200px; } .stats-grid { grid-template-columns: 1fr 1fr 1fr; } .chart-controls { flex-wrap: wrap; } }
+@media (max-width: 480px) { body { padding: 10px; } .container { border-radius: 10px; } .main-content { padding: 15px; } .header { padding: 20px 10px; } .header h1 { font-size: 1.5em; } .header p { font-size: 0.9em; } .stats-grid { grid-template-columns: 1fr; } .player-input-group { flex-direction: column; } .chart-controls { flex-direction: column; } .chart-btn { width: 100%; } }
